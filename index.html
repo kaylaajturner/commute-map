@@ -15,14 +15,19 @@
     --ink-2: #5c5c63;
     --line: #e3e1dc;
     --accent: #0d7d6c;
+    --accent-soft: #e9f4f1;
     --accent-ink: #ffffff;
+    --ok: #1b7f4b;
+    --bad: #b3261e;
     --error: #b3261e;
+    --person-a: #2563eb;
+    --person-b: #a23ad6;
     --radius: 10px;
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
-  body { display: grid; grid-template-columns: 340px 1fr; }
+  body { display: grid; grid-template-columns: 360px 1fr; }
   #map { height: 100vh; }
 
   .panel {
@@ -31,6 +36,7 @@
     display: flex; flex-direction: column; gap: 18px;
   }
   h1 { font-size: 20px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  h2 { font-size: 13px; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink); }
   .lede { margin: 0; color: var(--ink-2); font-size: 13.5px; line-height: 1.45; }
 
   label, legend { font-size: 12px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.04em; }
@@ -38,7 +44,7 @@
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   input[type=text], input[type=time], input[type=password] {
     font: inherit; font-size: 14px; padding: 9px 10px; border: 1px solid var(--line);
-    border-radius: 8px; background: #fff; color: var(--ink); width: 100%;
+    border-radius: 8px; background: #fff; color: var(--ink); width: 100%; min-width: 0;
   }
   input:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
   .inline { display: flex; gap: 8px; }
@@ -47,20 +53,41 @@
     padding: 9px 14px; background: var(--accent); color: var(--accent-ink); cursor: pointer; white-space: nowrap;
   }
   button:disabled { opacity: .5; cursor: default; }
+  button.secondary { background: transparent; color: var(--accent); border: 1px dashed var(--accent); }
+  button.secondary[aria-pressed=true] { background: var(--accent-soft); border-style: solid; }
+  button.icon {
+    background: transparent; color: var(--ink-2); padding: 2px 8px; font-size: 18px; line-height: 1; font-weight: 400;
+  }
+  button.icon:hover { color: var(--ink); background: var(--bg); }
   .hint { font-size: 12px; color: var(--ink-2); margin: 0; line-height: 1.4; }
+
+  /* Commuters */
+  #commuters { display: flex; flex-direction: column; gap: 12px; }
+  .commuter {
+    border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: var(--radius);
+    padding: 12px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .commuter-head { display: flex; align-items: center; gap: 8px; }
+  .commuter-head input.name {
+    font-weight: 700; font-size: 15px; border: 1px solid transparent; padding: 4px 6px; margin-left: -6px; background: transparent;
+  }
+  .commuter-head input.name:hover, .commuter-head input.name:focus { border-color: var(--line); background: #fff; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex: none; display: inline-block; }
 
   .slider-head { display: flex; justify-content: space-between; align-items: baseline; }
   .slider-head output { font-size: 15px; font-weight: 700; color: var(--ink); text-transform: none; letter-spacing: 0; }
   input[type=range] { width: 100%; accent-color: var(--accent); }
 
-  fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+  fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
   .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .seg.three { grid-template-columns: repeat(3, 1fr); }
   .seg label {
     text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 13px; color: var(--ink);
     border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; cursor: pointer; display: flex; gap: 6px; align-items: center;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
-  .seg input { accent-color: var(--accent); margin: 0; }
-  .seg label:has(input:checked) { border-color: var(--accent); background: #e9f4f1; }
+  .seg input { accent-color: var(--accent); margin: 0; flex: none; }
+  .seg label:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
 
   #status { font-size: 13px; color: var(--ink-2); min-height: 18px; }
   #status.error { color: var(--error); }
@@ -71,31 +98,71 @@
 
   .legend-bar { height: 12px; border-radius: 6px; background: linear-gradient(90deg, #0d7d6c, #4fb37b 27%, #e9c349 55%, #e7843a 82%, #c4473a); }
   .legend-ticks { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-2); margin-top: 4px; }
-  .legend-over { display: flex; align-items: center; gap: 8px; font-size: 12.5px; margin-top: 10px; color: var(--ink); }
+  .legend-caption { font-size: 12.5px; margin: 0 0 6px; color: var(--ink); }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; margin-top: 8px; color: var(--ink); }
+  .swatch { width: 26px; height: 14px; border-radius: 3px; flex: none; }
   .swatch-hatch {
-    width: 26px; height: 14px; border-radius: 3px; border: 1px solid #9a9aa2;
+    border: 1px solid #9a9aa2;
     background: repeating-linear-gradient(135deg, #8a8a93 0 1.5px, transparent 1.5px 6px);
   }
+  .swatch-tint { background: color-mix(in srgb, var(--c) 30%, white); border: 1px solid var(--c); }
+
+  /* Homes */
+  .section-head { display: flex; justify-content: space-between; align-items: center; }
+  #homeList { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .home { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+  .home-head { display: flex; align-items: flex-start; gap: 8px; }
+  .home-num {
+    flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: #fff;
+    font-size: 12px; font-weight: 700; display: grid; place-items: center; margin-top: 1px;
+  }
+  .home-label {
+    flex: 1; min-width: 0; font-size: 13.5px; font-weight: 600; line-height: 1.35; background: none; color: var(--ink);
+    padding: 0; text-align: left; white-space: normal; border-radius: 4px;
+  }
+  .home-label:hover { text-decoration: underline; }
+  .home-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; font-size: 12.5px; }
+  .home-row .who { display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .home-row .times { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .home-row .verdict { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 64px; text-align: right; }
+  .ok { color: var(--ok); }
+  .bad { color: var(--bad); }
+  .chip { align-self: flex-start; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+  .chip.ok { background: #e3f3ea; }
+  .chip.bad { background: #fbe9e7; }
+  .chip.partial { background: #fff3d6; color: #7a5300; }
+  .chip.wait { background: var(--bg); color: var(--ink-2); font-weight: 500; }
 
   details { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
   details summary { cursor: pointer; color: var(--ink); font-weight: 600; }
   details p { margin: 8px 0 0; }
 
   #tooltip {
-    position: fixed; z-index: 10; pointer-events: none; max-width: 270px;
+    position: fixed; z-index: 10; pointer-events: none; max-width: 280px;
     background: #1d1d1f; color: #fff; border-radius: 8px; padding: 10px 12px;
     font-size: 12.5px; line-height: 1.45; box-shadow: 0 6px 20px rgba(0,0,0,.25);
   }
   #tooltip .name { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+  #tooltip .person { display: flex; align-items: center; gap: 6px; font-weight: 600; margin-top: 6px; }
   #tooltip .grid { display: grid; grid-template-columns: auto auto; gap: 1px 12px; }
   #tooltip .grid span:nth-child(even) { text-align: right; font-variant-numeric: tabular-nums; }
   #tooltip .muted { color: #b8b8c0; }
-  #tooltip .over { color: #ffb4a8; font-weight: 600; margin-top: 4px; }
+  #tooltip .verdict { font-weight: 600; margin-top: 6px; }
+  #tooltip .verdict.good { color: #9be7b9; }
+  #tooltip .verdict.warn { color: #ffd88a; }
+  #tooltip .verdict.over { color: #ffb4a8; }
 
   .work-pin {
-    width: 22px; height: 22px; border-radius: 50%; background: var(--ink); border: 3px solid #fff;
-    box-shadow: 0 1px 6px rgba(0,0,0,.4); cursor: grab;
+    width: 26px; height: 26px; border-radius: 50%; background: var(--c); border: 3px solid #fff; color: #fff;
+    box-shadow: 0 1px 6px rgba(0,0,0,.4); cursor: grab; display: grid; place-items: center;
+    font: 700 12px/1 ui-sans-serif, system-ui, sans-serif;
   }
+  .home-pin {
+    width: 24px; height: 24px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+    background: var(--ink); border: 2px solid #fff; box-shadow: 0 1px 6px rgba(0,0,0,.4); cursor: grab;
+    display: grid; place-items: center;
+  }
+  .home-pin span { transform: rotate(45deg); color: #fff; font: 700 11px/1 ui-sans-serif, system-ui, sans-serif; }
 
   @media (max-width: 760px) {
     body { grid-template-columns: 1fr; grid-template-rows: auto 70vh; }
@@ -108,7 +175,7 @@
 <aside class="panel">
   <header>
     <h1>Commute range</h1>
-    <p class="lede">How far can you live from work and keep your drive under a limit? Typical weekday traffic, both directions.</p>
+    <p class="lede">How far can you live from work and keep your drive under a limit? Add a second commuter to find places that work for both of you.</p>
   </header>
 
   <section class="field" id="tokenSection" hidden>
@@ -120,25 +187,8 @@
     <p class="hint">Stored only in this browser. Or set <code>MAPBOX_TOKEN</code> at the top of the script.</p>
   </section>
 
-  <form class="field" id="workForm">
-    <label for="address">Work address</label>
-    <div class="inline">
-      <input type="text" id="address" placeholder="123 Main St, City" autocomplete="street-address" required>
-      <button type="submit" id="goBtn">Map it</button>
-    </div>
-    <p class="hint">You can also drag the pin on the map.</p>
-  </form>
-
-  <div class="row">
-    <div class="field">
-      <label for="startTime">Arrive by</label>
-      <input type="time" id="startTime" value="09:00" step="900">
-    </div>
-    <div class="field">
-      <label for="endTime">Leave at</label>
-      <input type="time" id="endTime" value="17:30" step="900">
-    </div>
-  </div>
+  <section id="commuters" aria-label="Commuters"></section>
+  <button type="button" class="secondary" id="addCommuter">+ Add a second commuter</button>
 
   <div class="field">
     <div class="slider-head">
@@ -149,7 +199,7 @@
   </div>
 
   <fieldset>
-    <legend>Color by</legend>
+    <legend>Measure by</legend>
     <div class="seg">
       <label><input type="radio" name="metric" value="avg" checked> Average</label>
       <label><input type="radio" name="metric" value="worst"> Worse leg</label>
@@ -158,22 +208,34 @@
     </div>
   </fieldset>
 
+  <fieldset id="viewSet" hidden>
+    <legend>Show</legend>
+    <div class="seg three" id="viewSeg"></div>
+  </fieldset>
+
   <div id="status" role="status" aria-live="polite"></div>
   <div class="summary" id="summary"></div>
 
-  <div>
-    <div class="legend-bar" aria-hidden="true"></div>
-    <div class="legend-ticks"><span>5</span><span>15</span><span>30</span><span>45</span><span>60 min</span></div>
-    <div class="legend-over"><span class="swatch-hatch" aria-hidden="true"></span> Over your limit</div>
-    <p class="hint" style="margin-top:6px">Areas more than 60 min away one-way aren't shown.</p>
-  </div>
+  <div id="legend"></div>
+
+  <section class="field" aria-labelledby="homesTitle">
+    <div class="section-head"><h2 id="homesTitle">Compare homes</h2></div>
+    <form class="inline" id="homeForm">
+      <input type="text" id="homeAddress" placeholder="Address of a place to compare" aria-label="Home address">
+      <button type="submit">Add</button>
+    </form>
+    <button type="button" class="secondary" id="pinBtn" aria-pressed="false">Drop a pin on the map</button>
+    <ol id="homeList"></ol>
+    <p class="hint" id="homesHint">Exact drive times for each place, checked against your limit. Drag a pin to move it.</p>
+  </section>
 
   <details>
     <summary>How this is calculated</summary>
     <p><b>Map colors</b> come from drive-time zones in 5-minute steps, calculated for a typical upcoming Tuesday so traffic patterns are realistic.</p>
-    <p><b>Evening</b> zones are measured leaving work at your end time. <b>Morning</b> zones are an estimate: Mapbox only measures outward from a point, so they use traffic leaving work 30 minutes before your start time.</p>
-    <p><b>Hover</b> any area for exact times: a real "arrive by" route for the morning and "leave at" route for the evening, plus the neighborhood name.</p>
-    <p>Changing the limit or color mode is instant. Changing a time only re-fetches that one leg, and every result is cached in your browser.</p>
+    <p><b>Evening</b> zones are measured leaving work at the end time. <b>Morning</b> zones are an estimate: Mapbox only measures outward from a point, so they use traffic leaving work 30 minutes before the start time.</p>
+    <p><b>With two commuters</b>, places within the limit for both are colored by whichever commute is longer. Places that only work for one person get that person's color.</p>
+    <p><b>Hovering</b> and <b>compared homes</b> use real routes: "arrive by" for the morning and "leave at" for the evening, plus the neighborhood name.</p>
+    <p>Changing the limit or "Measure by" is instant. Every result is cached in your browser.</p>
   </details>
 </aside>
 
@@ -182,7 +244,7 @@
 
 <script>
 // ─── Config ────────────────────────────────────────────────────────────────
-// Paste a Mapbox *public* token (pk.…) here, restricted to your site's URL.
+// Leave blank and paste your token into the page instead (see README).
 const MAPBOX_TOKEN = '';
 
 const PROFILE = 'mapbox/driving';         // typical traffic when depart_at / arrive_by is set
@@ -193,12 +255,25 @@ const MORNING_LEAD_MIN = 30;              // morning zones use traffic this long
 const TARGET_HEXES = 4500;
 const BASEMAP = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
 const COLOR_STOPS = [5, '#0d7d6c', 20, '#4fb37b', 35, '#e9c349', 50, '#e7843a', 60, '#c4473a'];
+const PERSON = {
+  a: { color: '#2563eb', defaultName: 'You' },
+  b: { color: '#a23ad6', defaultName: 'Partner' },
+};
 
 // ─── Small helpers ─────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const store = {
   get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* quota or blocked */ } },
+  set(k, v) {
+    try { localStorage.setItem(k, JSON.stringify(v)); }
+    catch {
+      // Probably full: drop cached drive-time zones (they can be re-fetched) and retry once.
+      try {
+        Object.keys(localStorage).filter(x => x.startsWith('leg|')).forEach(x => localStorage.removeItem(x));
+        localStorage.setItem(k, JSON.stringify(v));
+      } catch { /* storage unavailable */ }
+    }
+  },
 };
 const pad = n => String(n).padStart(2, '0');
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -224,11 +299,28 @@ function stamp(timeStr, offsetMin = 0) {
 }
 const COMPASS = ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest'];
 const compass = deg => COMPASS[Math.round(((deg % 360) + 360) % 360 / 45) % 8];
+const ll = c => `${c[0].toFixed(5)},${c[1].toFixed(5)}`;
 
 // ─── State ─────────────────────────────────────────────────────────────────
 let token = MAPBOX_TOKEN || store.get('mbToken') || '';
-const state = { work: null, legs: { am: null, pm: null }, hexes: null, runId: 0 };
 const requestCache = new Map();
+const state = { hexes: null, runId: 0, view: 'both' };
+
+// Commuters: persisted fields are id, name, address, work, start, end.
+// Runtime-only: legs (drive-time zones), times (the times those legs were fetched for), marker.
+let commuters = (store.get('commuters') || [{ id: 'a' }]).map(c => ({
+  id: c.id, name: c.name || PERSON[c.id].defaultName, address: c.address || '',
+  work: c.work || null, start: c.start || '09:00', end: c.end || '17:30',
+  legs: null, times: null, marker: null,
+}));
+const saveCommuters = () => store.set('commuters', commuters.map(({ id, name, address, work, start, end }) => ({ id, name, address, work, start, end })));
+const byId = id => commuters.find(c => c.id === id);
+const ready = () => commuters.filter(c => c.legs && c.times);   // commuters with data on the map
+const two = () => ready().length === 2;
+
+// Homes: persisted id, coords, label. Runtime: marker, results, seq.
+let homes = (store.get('homes') || []).map(h => ({ ...h, marker: null, results: {}, seq: 0 }));
+const saveHomes = () => store.set('homes', homes.map(({ id, coords, label }) => ({ id, coords, label })));
 
 // ─── Mapbox requests (deduped + cached in memory) ──────────────────────────
 function mb(url) {
@@ -250,7 +342,7 @@ function mb(url) {
 }
 
 function friendlyError(e) {
-  if (e.status === 401) return 'Mapbox rejected the token. Check it, and that its URL restrictions include this site.';
+  if (e.status === 401) return 'Mapbox rejected the token. Check that it was pasted correctly.';
   if (e.status === 429) return 'Hit the Mapbox rate limit. Wait a minute and try again.';
   return e.message || 'Something went wrong.';
 }
@@ -278,6 +370,33 @@ async function addressAt([lng, lat]) {
   const data = await mb(`https://api.mapbox.com/search/geocode/v6/reverse?longitude=${lng.toFixed(5)}&latitude=${lat.toFixed(5)}&types=address&limit=1`);
   const f = data.features && data.features[0];
   return f ? (f.properties.full_address || f.properties.name) : null;
+}
+
+// Exact drive times between a home and a commuter's work: real "arrive by" and "leave at" routes.
+async function exactTimes(home, c) {
+  const h = ll(home), w = ll(c.work);
+  const [amR, pmR] = await Promise.allSettled([
+    mb(`https://api.mapbox.com/directions/v5/${PROFILE}/${h};${w}?arrive_by=${stamp(c.times.start)}&overview=false`),
+    mb(`https://api.mapbox.com/directions/v5/${PROFILE}/${w};${h}?depart_at=${stamp(c.times.end)}&overview=false`),
+  ]);
+  const route = r => r.status === 'fulfilled' && r.value.routes && r.value.routes[0];
+  const am = route(amR), pm = route(pmR);
+  if (!am && !pm) return null;
+  return {
+    am: am ? am.duration / 60 : null,
+    pm: pm ? pm.duration / 60 : null,
+    miles: (am || pm).distance / 1609.34,
+  };
+}
+
+// Pick a metric from {am, pm} minutes.
+function metricOf(t, m) {
+  if (!t) return null;
+  const { am, pm } = t;
+  if (m === 'am') return am;
+  if (m === 'pm') return pm;
+  if (am == null || pm == null) return null;
+  return m === 'avg' ? (am + pm) / 2 : Math.max(am, pm);
 }
 
 // One leg = 12 drive-time zones (5…60 min) from work at a given departure time.
@@ -324,8 +443,9 @@ function bandFor(pt, leg) {
 }
 
 // ─── Hex grid built client-side from the zones (no extra API calls) ───────
-function buildHexes(work, am, pm) {
-  const outer = [am.contours.at(-1), pm.contours.at(-1)].filter(Boolean);
+// Each hex gets <id>_am, <id>_pm, <id>_avg, <id>_worst, <id>_mi per commuter.
+function buildHexes(list) {
+  const outer = list.flatMap(c => [c.legs.am.contours.at(-1), c.legs.pm.contours.at(-1)]).filter(Boolean);
   if (!outer.length) return turf.featureCollection([]);
   const bb = turf.bbox(turf.featureCollection(outer));
   const wKm = turf.distance([bb[0], bb[1]], [bb[2], bb[1]]);
@@ -337,22 +457,24 @@ function buildHexes(work, am, pm) {
   let id = 0;
   for (const h of grid.features) {
     const c = turf.centroid(h);
-    const a = bandFor(c, am), p = bandFor(c, pm);
-    if (a == null && p == null) continue;
-    const both = a != null && p != null;
-    features.push({
-      type: 'Feature',
-      geometry: h.geometry,
-      properties: {
-        id: id++, am: a, pm: p,
-        avg: both ? (a + p) / 2 : null,
-        worst: both ? Math.max(a, p) : null,
-        cx: c.geometry.coordinates[0], cy: c.geometry.coordinates[1],
-        miles: turf.distance(work, c, { units: 'miles' }),
-        bearing: turf.bearing(work, c),
-        areaSqMi: 2.598 * side * side * 0.386102,
-      },
+    const props = {};
+    let any = false;
+    for (const p of list) {
+      const a = bandFor(c, p.legs.am), b = bandFor(c, p.legs.pm);
+      if (a == null && b == null) continue;
+      any = true;
+      if (a != null) props[`${p.id}_am`] = a;
+      if (b != null) props[`${p.id}_pm`] = b;
+      if (a != null && b != null) { props[`${p.id}_avg`] = (a + b) / 2; props[`${p.id}_worst`] = Math.max(a, b); }
+      props[`${p.id}_mi`] = turf.distance(p.work, c, { units: 'miles' });
+      props[`${p.id}_brg`] = turf.bearing(p.work, c);
+    }
+    if (!any) continue;
+    Object.assign(props, {
+      id: id++, cx: c.geometry.coordinates[0], cy: c.geometry.coordinates[1],
+      areaSqMi: 2.598 * side * side * 0.386102,
     });
+    features.push({ type: 'Feature', geometry: h.geometry, properties: props });
   }
   return turf.featureCollection(features);
 }
@@ -362,24 +484,24 @@ const map = new maplibregl.Map({ container: 'map', style: BASEMAP, center: [-98.
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
 map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: 'Drive times © Mapbox' }));
 
-let marker = null;
 let mapReady = false;
+const FILL_LAYERS = ['hex-out', 'hex-a', 'hex-b', 'hex-in'];
 map.on('load', () => {
   map.addImage('hatch', makeHatch(), { pixelRatio: 2 });
   const firstSymbol = map.getStyle().layers.find(l => l.type === 'symbol');
   const before = firstSymbol && firstSymbol.id;
+  const hoverOpacity = (on, off) => ['case', ['boolean', ['feature-state', 'hover'], false], on, off];
   map.addSource('hex', { type: 'geojson', data: turf.featureCollection([]), promoteId: 'id' });
   map.addLayer({ id: 'hex-out', type: 'fill', source: 'hex', paint: { 'fill-pattern': 'hatch', 'fill-opacity': 0.6 } }, before);
-  map.addLayer({
-    id: 'hex-in', type: 'fill', source: 'hex',
-    paint: { 'fill-color': colorExpr('avg'), 'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.85, 0.6] },
-  }, before);
+  map.addLayer({ id: 'hex-a', type: 'fill', source: 'hex', paint: { 'fill-color': PERSON.a.color, 'fill-opacity': hoverOpacity(0.45, 0.25) } }, before);
+  map.addLayer({ id: 'hex-b', type: 'fill', source: 'hex', paint: { 'fill-color': PERSON.b.color, 'fill-opacity': hoverOpacity(0.45, 0.25) } }, before);
+  map.addLayer({ id: 'hex-in', type: 'fill', source: 'hex', paint: { 'fill-color': '#999', 'fill-opacity': hoverOpacity(0.85, 0.6) } }, before);
   map.addLayer({
     id: 'hex-hover', type: 'line', source: 'hex',
     paint: { 'line-color': '#1d1d1f', 'line-width': ['case', ['boolean', ['feature-state', 'hover'], false], 2, 0] },
   }, before);
   mapReady = true;
-  if (state.hexes) render();
+  render();
 });
 
 function makeHatch() {
@@ -396,122 +518,284 @@ function makeHatch() {
 
 const metric = () => document.querySelector('input[name=metric]:checked').value;
 const maxMin = () => Number($('maxCommute').value);
-const valueExpr = m => ['coalesce', ['get', m], 999];
-function colorExpr(m) { return ['interpolate', ['linear'], valueExpr(m), ...COLOR_STOPS]; }
+
+// Which commuters the map is currently judging: both, or one chosen in "Show".
+function activeKeys() {
+  const ids = ready().map(c => c.id);
+  if (state.view !== 'both' && ids.includes(state.view)) return [state.view];
+  return ids;
+}
+
+// Pure function: map filters + color for the given commuters/metric/limit. Exposed for testing.
+function styleSpec(keys, m, max) {
+  const val = k => ['coalesce', ['get', `${k}_${m}`], 999];
+  const ok = k => ['<=', val(k), max];
+  const not = e => ['!', e];
+  const none = ['==', 1, 0];
+  if (keys.length === 0) return { in: none, a: none, b: none, out: none, color: '#999' };
+  if (keys.length === 1) {
+    const [k] = keys;
+    return { in: ok(k), a: none, b: none, out: not(ok(k)), color: ['interpolate', ['linear'], val(k), ...COLOR_STOPS] };
+  }
+  const [a, b] = keys;
+  return {
+    in: ['all', ok(a), ok(b)],
+    a: ['all', ok(a), not(ok(b))],
+    b: ['all', ok(b), not(ok(a))],
+    out: ['all', not(ok(a)), not(ok(b))],
+    color: ['interpolate', ['linear'], ['max', val(a), val(b)], ...COLOR_STOPS],
+  };
+}
 
 function render() {
-  if (!mapReady || !state.hexes) return;
-  const m = metric(), max = maxMin();
-  map.getSource('hex').setData(state.hexes);
-  applyStyle(m, max);
+  if (mapReady) map.getSource('hex').setData(state.hexes || turf.featureCollection([]));
+  applyStyle();
 }
-function applyStyle(m = metric(), max = maxMin()) {
-  if (!mapReady) return;
-  map.setPaintProperty('hex-in', 'fill-color', colorExpr(m));
-  map.setFilter('hex-in', ['<=', valueExpr(m), max]);
-  map.setFilter('hex-out', ['>', valueExpr(m), max]);
-  updateSummary(m, max);
+function applyStyle() {
+  const keys = activeKeys(), m = metric(), max = maxMin();
+  if (mapReady) {
+    const s = styleSpec(keys, m, max);
+    map.setFilter('hex-in', s.in);
+    map.setFilter('hex-a', s.a);
+    map.setFilter('hex-b', s.b);
+    map.setFilter('hex-out', s.out);
+    map.setPaintProperty('hex-in', 'fill-color', s.color);
+  }
+  renderView();
+  renderLegend(keys);
+  updateSummary(keys, m, max);
+  renderHomes();
 }
 
 const METRIC_LABEL = { avg: 'average commute', worst: 'longer leg', am: 'morning commute', pm: 'evening commute' };
-function updateSummary(m, max) {
+const isYou = c => c.name.trim().toLowerCase() === 'you';
+const possessive = c => (commuters.length === 1 || isYou(c)) ? 'your' : `${esc(c.name)}’s`;
+// Compare what people see: a time shown as "45 min" counts as within a 45-min limit.
+const within = (v, max) => v != null && Math.round(v) <= max;
+
+function updateSummary(keys, m, max) {
   const el = $('summary');
-  if (!state.hexes) { el.innerHTML = ''; return; }
-  let far = null, area = 0;
-  for (const f of state.hexes.features) {
-    const v = f.properties[m];
-    if (v == null || v > max) continue;
-    area += f.properties.areaSqMi;
-    if (!far || f.properties.miles > far.miles) far = f.properties;
+  if (!state.hexes || !keys.length) { el.innerHTML = ''; return; }
+  const feats = state.hexes.features;
+  const fits = (p, k) => p[`${k}_${m}`] != null && p[`${k}_${m}`] <= max;
+  const traffic = keys.every(k => byId(k).legs.am.typicalTraffic && byId(k).legs.pm.typicalTraffic) ? ''
+    : '<br><span class="hint">Typical traffic wasn’t available here, so times use average road speeds.</span>';
+
+  if (keys.length === 1) {
+    const k = keys[0], c = byId(k);
+    let far = null, area = 0;
+    for (const { properties: p } of feats) {
+      if (!fits(p, k)) continue;
+      area += p.areaSqMi;
+      if (!far || p[`${k}_mi`] > far[`${k}_mi`]) far = p;
+    }
+    if (!far) { el.innerHTML = `Nothing within ${max} min for ${possessive(c)} ${METRIC_LABEL[m]}. Try raising the limit.`; return; }
+    el.innerHTML = `<strong>Up to ~${Math.round(far[`${k}_mi`])} mi away</strong>
+      keeps ${possessive(c)} ${METRIC_LABEL[m]} at or under ${max} min (farthest point is ${compass(far[`${k}_brg`])} of work, straight-line).
+      About ${Math.round(area).toLocaleString()} sq mi qualifies.${traffic}`;
+    return;
   }
-  if (!far) { el.innerHTML = `Nothing within ${max} min for your ${METRIC_LABEL[m]}. Try raising the limit.`; return; }
-  const note = (state.legs.am.typicalTraffic && state.legs.pm.typicalTraffic) ? '' : '<br><span class="hint">Typical traffic wasn’t available here, so times use average road speeds.</span>';
-  el.innerHTML = `<strong>Up to ~${Math.round(far.miles)} mi away</strong>
-    keeps your ${METRIC_LABEL[m]} at or under ${max} min (farthest point is ${compass(far.bearing)} of work, straight-line).
-    About ${Math.round(area).toLocaleString()} sq mi qualifies.${note}`;
+
+  const [a, b] = keys.map(byId);
+  let both = 0, onlyA = 0, onlyB = 0;
+  for (const { properties: p } of feats) {
+    const fa = fits(p, a.id), fb = fits(p, b.id);
+    if (fa && fb) both += p.areaSqMi; else if (fa) onlyA += p.areaSqMi; else if (fb) onlyB += p.areaSqMi;
+  }
+  const n = v => Math.round(v).toLocaleString();
+  el.innerHTML = both
+    ? `<strong>~${n(both)} sq mi works for both</strong>
+       keeping each ${METRIC_LABEL[m]} at or under ${max} min. Another ${n(onlyA)} sq mi only works for ${esc(a.name)} and ${n(onlyB)} sq mi only for ${esc(b.name)}.${traffic}`
+    : `<strong>No overlap yet</strong> Nothing keeps both ${METRIC_LABEL[m]}s under ${max} min. Try raising the limit or measuring by Average.${traffic}`;
 }
 
-// ─── Main flow ─────────────────────────────────────────────────────────────
+function renderLegend(keys) {
+  const el = $('legend');
+  if (!keys.length) { el.innerHTML = ''; return; }
+  const ramp = `<div class="legend-bar" aria-hidden="true"></div>
+    <div class="legend-ticks"><span>5</span><span>15</span><span>30</span><span>45</span><span>60 min</span></div>`;
+  if (keys.length === 1) {
+    el.innerHTML = `${ramp}
+      <div class="legend-item"><span class="swatch swatch-hatch" aria-hidden="true"></span> Over the limit</div>
+      <p class="hint" style="margin-top:6px">Areas more than 60 min away one-way aren't shown.</p>`;
+    return;
+  }
+  const [a, b] = keys.map(byId);
+  el.innerHTML = `<p class="legend-caption">Works for both, colored by the longer commute</p>${ramp}
+    <div class="legend-item"><span class="swatch swatch-tint" style="--c:${PERSON.a.color}" aria-hidden="true"></span> Only works for ${esc(a.name)}</div>
+    <div class="legend-item"><span class="swatch swatch-tint" style="--c:${PERSON.b.color}" aria-hidden="true"></span> Only works for ${esc(b.name)}</div>
+    <div class="legend-item"><span class="swatch swatch-hatch" aria-hidden="true"></span> Too far for both</div>`;
+}
+
+function renderView() {
+  const set = $('viewSet');
+  if (!two()) { set.hidden = true; state.view = 'both'; return; }
+  set.hidden = false;
+  const opts = [['both', 'Both'], ...ready().map(c => [c.id, c.name])];
+  const seg = $('viewSeg');
+  const sig = JSON.stringify([opts, state.view]);
+  if (seg.dataset.sig === sig) return;      // avoid rebuilding (and losing focus) when nothing changed
+  seg.dataset.sig = sig;
+  seg.innerHTML = opts.map(([v, label]) => `<label title="${esc(label)}"><input type="radio" name="view" value="${v}" ${state.view === v ? 'checked' : ''}> ${v === 'both' ? '' : `<span class="dot" style="--c:${PERSON[v].color}"></span>`}${esc(label)}</label>`).join('');
+  seg.querySelectorAll('input').forEach(r => r.addEventListener('change', () => { state.view = r.value; applyStyle(); }));
+}
+
+// ─── Status ────────────────────────────────────────────────────────────────
 function setStatus(msg, isError = false) {
   const s = $('status');
   s.textContent = msg;
   s.classList.toggle('error', isError);
 }
 
-function placeMarker(coords) {
-  if (!marker) {
+// ─── Commuter cards ────────────────────────────────────────────────────────
+function renderCommuters() {
+  const wrap = $('commuters');
+  wrap.innerHTML = commuters.map(c => `
+    <div class="commuter" data-id="${c.id}" style="--c:${PERSON[c.id].color}">
+      <div class="commuter-head">
+        <span class="dot" aria-hidden="true"></span>
+        <input type="text" class="name" value="${esc(c.name)}" aria-label="Commuter name" maxlength="24">
+        ${c.id === 'b' ? '<button type="button" class="icon remove" aria-label="Remove this commuter" title="Remove">×</button>' : ''}
+      </div>
+      <form class="field addr-form">
+        <label for="addr-${c.id}">Work address</label>
+        <div class="inline">
+          <input type="text" id="addr-${c.id}" class="address" value="${esc(c.address)}" placeholder="123 Main St, City" required>
+          <button type="submit">Map it</button>
+        </div>
+      </form>
+      <div class="row">
+        <div class="field"><label for="start-${c.id}">Arrive by</label><input type="time" id="start-${c.id}" class="start" value="${c.start}" step="900"></div>
+        <div class="field"><label for="end-${c.id}">Leave at</label><input type="time" id="end-${c.id}" class="end" value="${c.end}" step="900"></div>
+      </div>
+    </div>`).join('');
+
+  wrap.querySelectorAll('.commuter').forEach(card => {
+    const c = byId(card.dataset.id);
+    card.querySelector('.name').addEventListener('input', e => {
+      c.name = e.target.value.trim() || PERSON[c.id].defaultName;
+      saveCommuters();
+      if (c.marker) c.marker.getElement().textContent = c.name[0].toUpperCase();
+      $('viewSeg').dataset.sig = '';
+      applyStyle();
+    });
+    card.querySelector('.addr-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!token) { setStatus('Add a Mapbox token first.', true); return; }
+      const input = card.querySelector('.address');
+      const btn = card.querySelector('button[type=submit]');
+      const q = input.value.trim();
+      if (!q) return;
+      btn.disabled = true;
+      setStatus('Finding address…');
+      try {
+        const { coords, label } = await geocode(q);
+        input.value = c.address = label;
+        c.work = coords;
+        saveCommuters();
+        placeWorkMarker(c);
+        await run({ fit: true });
+      } catch (err) {
+        setStatus(friendlyError(err), true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+    ['start', 'end'].forEach(k => card.querySelector(`.${k}`).addEventListener('change', e => {
+      if (!e.target.value) return;
+      c[k] = snapTime(e.target.value);
+      e.target.value = c[k];
+      saveCommuters();
+      rerunSoon();
+    }));
+    const rm = card.querySelector('.remove');
+    if (rm) rm.addEventListener('click', () => removeCommuter(c.id));
+  });
+  $('addCommuter').hidden = commuters.length >= 2;
+}
+
+function addCommuter() {
+  const a = commuters[0];
+  commuters.push({ id: 'b', name: PERSON.b.defaultName, address: '', work: null, start: a.start, end: a.end, legs: null, times: null, marker: null });
+  saveCommuters();
+  renderCommuters();
+  $('addr-b').focus();
+}
+function removeCommuter(id) {
+  const c = byId(id);
+  if (c && c.marker) c.marker.remove();
+  commuters = commuters.filter(x => x.id !== id);
+  state.view = 'both';
+  saveCommuters();
+  renderCommuters();
+  homes.forEach(h => { delete h.results[id]; });
+  run();
+}
+$('addCommuter').addEventListener('click', addCommuter);
+
+function placeWorkMarker(c) {
+  if (!c.marker) {
     const el = document.createElement('div');
     el.className = 'work-pin';
-    el.title = 'Work (drag to move)';
-    marker = new maplibregl.Marker({ element: el, draggable: true }).setLngLat(coords).addTo(map);
-    marker.on('dragend', async () => {
-      const ll = marker.getLngLat();
-      state.work = [ll.lng, ll.lat];
+    el.style.setProperty('--c', PERSON[c.id].color);
+    el.textContent = c.name[0].toUpperCase();
+    el.title = `${c.name}’s work (drag to move)`;
+    c.marker = new maplibregl.Marker({ element: el, draggable: true }).setLngLat(c.work).addTo(map);
+    c.marker.on('dragend', async () => {
+      const p = c.marker.getLngLat();
+      c.work = [p.lng, p.lat];
+      saveCommuters();
       run();
-      try { const a = await addressAt(state.work); if (a) $('address').value = a; } catch { /* label is optional */ }
+      try {
+        const a = await addressAt(c.work);
+        if (a) { c.address = a; saveCommuters(); const inp = $(`addr-${c.id}`); if (inp) inp.value = a; }
+      } catch { /* label is optional */ }
     });
   } else {
-    marker.setLngLat(coords);
+    c.marker.setLngLat(c.work);
   }
 }
 
+// ─── Main flow ─────────────────────────────────────────────────────────────
 async function run({ fit = false } = {}) {
-  if (!state.work) return;
+  const withWork = commuters.filter(c => c.work);
+  if (!withWork.length) {
+    commuters.forEach(c => { c.legs = null; c.times = null; });
+    state.hexes = null; render(); return;
+  }
   if (!token) { setStatus('Add a Mapbox token first.', true); return; }
   const id = ++state.runId;
-  const start = snapTime($('startTime').value || '09:00');
-  const end = snapTime($('endTime').value || '17:30');
-  $('startTime').value = start;
-  $('endTime').value = end;
   setStatus('Calculating drive times…');
   try {
-    const [am, pm] = await Promise.all([
-      fetchLeg(state.work, stamp(start, -MORNING_LEAD_MIN)),
-      fetchLeg(state.work, stamp(end)),
-    ]);
+    const results = await Promise.all(withWork.map(async c => {
+      const times = { start: c.start, end: c.end };
+      const [am, pm] = await Promise.all([
+        fetchLeg(c.work, stamp(times.start, -MORNING_LEAD_MIN)),
+        fetchLeg(c.work, stamp(times.end)),
+      ]);
+      return { c, legs: { am, pm }, times };
+    }));
     if (id !== state.runId) return;           // a newer request superseded this one
-    state.legs = { am, pm };
-    state.times = { start, end };
-    state.hexes = buildHexes(state.work, am, pm);
+    commuters.forEach(c => { c.legs = null; c.times = null; });
+    results.forEach(({ c, legs, times }) => { c.legs = legs; c.times = times; });
+    state.hexes = buildHexes(ready());
     hoverDetails.clear();
     render();
-    setStatus(`Arrive by ${prettyTime(start)}, leave at ${prettyTime(end)} · typical Tuesday traffic`);
+    refreshHomes();
+    setStatus(ready().length === 2 ? 'Typical Tuesday traffic for both schedules' : `Arrive by ${prettyTime(withWork[0].start)}, leave at ${prettyTime(withWork[0].end)} · typical Tuesday traffic`);
     if (fit && state.hexes.features.length) map.fitBounds(turf.bbox(state.hexes), { padding: 40, duration: 800 });
   } catch (e) {
     if (id !== state.runId) return;
     setStatus(friendlyError(e), true);
   }
 }
+const rerunSoon = debounce(() => run(), 450);
 
-$('workForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  if (!token) { setStatus('Add a Mapbox token first.', true); return; }
-  const q = $('address').value.trim();
-  if (!q) return;
-  $('goBtn').disabled = true;
-  setStatus('Finding address…');
-  try {
-    const { coords, label } = await geocode(q);
-    $('address').value = label;
-    state.work = coords;
-    placeMarker(coords);
-    map.flyTo({ center: coords, zoom: 9.5, duration: 600 });
-    await run({ fit: true });
-  } catch (err) {
-    setStatus(friendlyError(err), true);
-  } finally {
-    $('goBtn').disabled = false;
-  }
-});
-
-const rerunTimes = debounce(() => run(), 450);
-$('startTime').addEventListener('change', rerunTimes);
-$('endTime').addEventListener('change', rerunTimes);
 $('maxCommute').addEventListener('input', () => {
   $('maxOut').textContent = `${maxMin()} min`;
   applyStyle();
 });
-document.querySelectorAll('input[name=metric]').forEach(r => r.addEventListener('change', () => applyStyle()));
+document.querySelectorAll('input[name=metric]').forEach(r => r.addEventListener('change', applyStyle));
 
 // Token UI
 function refreshTokenUI() { $('tokenSection').hidden = !!token; }
@@ -522,39 +806,195 @@ $('tokenSave').addEventListener('click', () => {
   store.set('mbToken', v);
   refreshTokenUI();
   setStatus('Token saved. Enter a work address.');
+  run({ fit: true });
+  refreshHomes();
 });
-refreshTokenUI();
-if (!token) setStatus('Paste a Mapbox public token to get started.');
+
+// ─── Compare homes ─────────────────────────────────────────────────────────
+let pinMode = false;
+
+function setPinMode(on) {
+  pinMode = on;
+  const btn = $('pinBtn');
+  btn.setAttribute('aria-pressed', String(on));
+  btn.textContent = on ? 'Click the map to place it… (Esc to cancel)' : 'Drop a pin on the map';
+  map.getCanvas().style.cursor = on ? 'crosshair' : '';
+  if (on) clearHover();
+}
+$('pinBtn').addEventListener('click', () => {
+  if (!token) { setStatus('Add a Mapbox token first.', true); return; }
+  setPinMode(!pinMode);
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && pinMode) setPinMode(false); });
+
+$('homeForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!token) { setStatus('Add a Mapbox token first.', true); return; }
+  const q = $('homeAddress').value.trim();
+  if (!q) return;
+  try {
+    const { coords, label } = await geocode(q);
+    $('homeAddress').value = '';
+    addHome(coords, label);
+    map.flyTo({ center: coords, zoom: Math.max(map.getZoom(), 11), duration: 600 });
+  } catch (err) {
+    setStatus(friendlyError(err), true);
+  }
+});
+
+function addHome(coords, label = null) {
+  const h = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), coords, label, marker: null, results: {}, seq: 0 };
+  homes.push(h);
+  placeHomeMarker(h);
+  saveHomes();
+  computeHome(h);
+}
+function removeHome(id) {
+  const h = homes.find(x => x.id === id);
+  if (h && h.marker) h.marker.remove();
+  homes = homes.filter(x => x.id !== id);
+  saveHomes();
+  renderHomes();
+}
+
+function placeHomeMarker(h) {
+  const el = document.createElement('div');
+  el.className = 'home-pin';
+  el.innerHTML = '<span></span>';
+  h.marker = new maplibregl.Marker({ element: el, draggable: true, anchor: 'bottom' }).setLngLat(h.coords).addTo(map);
+  h.marker.on('dragend', () => {
+    const p = h.marker.getLngLat();
+    h.coords = [p.lng, p.lat];
+    h.label = null;
+    saveHomes();
+    computeHome(h);
+  });
+}
+
+async function computeHome(h) {
+  const seq = ++h.seq;
+  h.results = {};
+  renderHomes();
+  if (!token) return;
+  const jobs = [];
+  if (!h.label) {
+    jobs.push((async () => {
+      try { h.label = (await addressAt(h.coords)) || (await reverseName(h.coords)) || 'Dropped pin'; }
+      catch { h.label = 'Dropped pin'; }
+      saveHomes();
+    })());
+  }
+  for (const c of ready()) {
+    jobs.push(exactTimes(h.coords, c)
+      .then(t => { if (seq === h.seq) h.results[c.id] = t || 'none'; })
+      .catch(() => { if (seq === h.seq) h.results[c.id] = 'none'; })
+      .then(() => { if (seq === h.seq) renderHomes(); }));
+  }
+  await Promise.all(jobs);
+  if (seq === h.seq) renderHomes();
+}
+function refreshHomes() { homes.forEach(computeHome); }
+
+const mins = v => v == null ? '—' : `${Math.round(v)}`;
+function renderHomes() {
+  const list = $('homeList');
+  const people = ready();
+  const m = metric(), max = maxMin();
+  homes.forEach((h, i) => {
+    if (h.marker) { h.marker.getElement().querySelector('span').textContent = i + 1; h.marker.getElement().title = h.label || 'Home'; }
+  });
+  $('homesHint').hidden = homes.length > 0;
+  list.innerHTML = homes.map((h, i) => {
+    const verdicts = [];
+    const rows = people.map(c => {
+      const r = h.results[c.id];
+      if (r === undefined) return `<div class="home-row"><span class="who"><span class="dot" style="--c:${PERSON[c.id].color}"></span>${esc(c.name)}</span><span class="times">Checking…</span><span></span></div>`;
+      if (r === 'none') { verdicts.push(null); return `<div class="home-row"><span class="who"><span class="dot" style="--c:${PERSON[c.id].color}"></span>${esc(c.name)}</span><span class="times">No route found</span><span></span></div>`; }
+      const v = metricOf(r, m);
+      const ok = within(v, max);
+      verdicts.push(ok);
+      const label = { avg: 'avg', worst: 'max', am: 'AM', pm: 'PM' }[m];
+      return `<div class="home-row" title="${r.miles.toFixed(1)} mi drive">
+        <span class="who"><span class="dot" style="--c:${PERSON[c.id].color}"></span>${esc(c.name)}</span>
+        <span class="times">AM ${mins(r.am)} · PM ${mins(r.pm)}</span>
+        <span class="verdict ${ok ? 'ok' : 'bad'}">${label} ${mins(v)} ${ok ? '✓' : '✗'}</span>
+      </div>`;
+    }).join('');
+
+    let chip = '';
+    if (!people.length) chip = '<span class="chip wait">Map a work address to see drive times</span>';
+    else if (verdicts.length < people.length) chip = '';
+    else if (people.length === 1) chip = verdicts[0] ? '<span class="chip ok">Within the limit</span>' : '<span class="chip bad">Over the limit</span>';
+    else {
+      const okNames = people.filter((c, j) => verdicts[j]).map(c => esc(c.name));
+      chip = okNames.length === 2 ? '<span class="chip ok">Works for both</span>'
+        : okNames.length === 1 ? `<span class="chip partial">Only works for ${okNames[0]}</span>`
+        : '<span class="chip bad">Too far for both</span>';
+    }
+    return `<li class="home" data-id="${h.id}">
+      <div class="home-head">
+        <span class="home-num">${i + 1}</span>
+        <button type="button" class="home-label" title="Show on map">${esc(h.label || 'Finding address…')}</button>
+        <button type="button" class="icon remove" aria-label="Remove ${esc(h.label || 'this place')}" title="Remove">×</button>
+      </div>
+      ${rows}
+      ${chip}
+    </li>`;
+  }).join('');
+  list.querySelectorAll('.home').forEach(li => {
+    const h = homes.find(x => x.id === li.dataset.id);
+    li.querySelector('.home-label').addEventListener('click', () => map.flyTo({ center: h.coords, zoom: Math.max(map.getZoom(), 12), duration: 600 }));
+    li.querySelector('.remove').addEventListener('click', () => removeHome(h.id));
+  });
+}
 
 // ─── Hover tooltip ─────────────────────────────────────────────────────────
 const tip = $('tooltip');
-const hoverDetails = new Map();   // hex id → { name, am, pm, miles } | 'loading' | 'error'
+const hoverDetails = new Map();   // hex id → { name, per: { a: times, b: times } } | 'loading'
 let hoverId = null;
 let lastPoint = null;
 
-const fmtMin = s => `${Math.round(s / 60)} min`;
 const band = v => v == null ? '60+ min' : `${v - STEP_MIN}–${v} min`;
 
 function tooltipHtml(p) {
   const d = hoverDetails.get(p.id);
-  const ready = d && typeof d === 'object';
+  const ready_ = d && typeof d === 'object';
   const m = metric(), max = maxMin();
-  const v = p[m];
-  const name = ready && d.name ? esc(d.name) : (d === 'error' ? 'Unnamed area' : '<span class="muted">Finding neighborhood…</span>');
-  const amVal = ready && d.am != null ? fmtMin(d.am) : band(p.am);
-  const pmVal = ready && d.pm != null ? fmtMin(d.pm) : band(p.pm);
-  const avgVal = ready && d.am != null && d.pm != null ? fmtMin((d.am + d.pm) / 2)
-    : (p.avg != null ? `≈ ${Math.round(p.avg)} min` : '—');
-  const dist = ready && d.miles != null ? `${d.miles.toFixed(1)} mi drive` : `${p.miles.toFixed(1)} mi straight-line`;
-  return `<div class="name">${name}</div>
-    <div class="grid">
-      <span class="muted">Morning (arrive ${prettyTime(state.times.start)})</span><span>${amVal}</span>
-      <span class="muted">Evening (leave ${prettyTime(state.times.end)})</span><span>${pmVal}</span>
-      <span class="muted">Average</span><span>${avgVal}</span>
-      <span class="muted">Distance</span><span>${dist}</span>
-    </div>
-    ${v == null || v > max ? `<div class="over">Over your ${max}-min limit</div>` : ''}
-    ${ready ? '' : '<div class="muted" style="margin-top:4px">Getting exact times…</div>'}`;
+  const name = ready_ ? esc(d.name || 'Unnamed area') : '<span class="muted">Finding neighborhood…</span>';
+  const people = ready();
+  const keys = activeKeys();
+  const fits = {};
+
+  const blocks = people.map(c => {
+    const k = c.id;
+    const exact = ready_ ? d.per[k] : null;
+    const am = exact && exact.am != null ? `${Math.round(exact.am)} min` : band(p[`${k}_am`]);
+    const pm = exact && exact.pm != null ? `${Math.round(exact.pm)} min` : band(p[`${k}_pm`]);
+    const avgExact = metricOf(exact, 'avg');
+    const avg = avgExact != null ? `${Math.round(avgExact)} min` : (p[`${k}_avg`] != null ? `≈ ${Math.round(p[`${k}_avg`])} min` : '—');
+    const dist = exact ? `${exact.miles.toFixed(1)} mi drive` : `${(p[`${k}_mi`] || 0).toFixed(1)} mi straight-line`;
+    const v = exact ? metricOf(exact, m) : p[`${k}_${m}`];
+    fits[k] = within(v, max);
+    const head = people.length > 1 ? `<div class="person"><span class="dot" style="--c:${PERSON[k].color}"></span>${esc(c.name)} <span class="muted">· ${dist}</span></div>` : '';
+    return `${head}<div class="grid">
+      <span class="muted">Morning (arrive ${prettyTime(c.times.start)})</span><span>${am}</span>
+      <span class="muted">Evening (leave ${prettyTime(c.times.end)})</span><span>${pm}</span>
+      <span class="muted">Average</span><span>${avg}</span>
+      ${people.length > 1 ? '' : `<span class="muted">Distance</span><span>${dist}</span>`}
+    </div>`;
+  }).join('');
+
+  let verdict = '';
+  if (keys.length === 2) {
+    const okNames = keys.filter(k => fits[k]).map(k => esc(byId(k).name));
+    verdict = okNames.length === 2 ? `<div class="verdict good">Works for both</div>`
+      : okNames.length === 1 ? `<div class="verdict warn">Only works for ${okNames[0]}</div>`
+      : `<div class="verdict over">Over the ${max}-min limit for both</div>`;
+  } else if (keys.length === 1 && !fits[keys[0]]) {
+    verdict = `<div class="verdict over">Over the ${max}-min limit${people.length > 1 ? ` for ${esc(byId(keys[0]).name)}` : ''}</div>`;
+  }
+  return `<div class="name">${name}</div>${blocks}${verdict}
+    ${ready_ ? '' : '<div class="muted" style="margin-top:4px">Getting exact times…</div>'}`;
 }
 
 function positionTip(pt) {
@@ -567,35 +1007,22 @@ function positionTip(pt) {
   tip.style.top = `${Math.max(8, y)}px`;
 }
 
-const fetchDetailsSoon = debounce(p => fetchDetails(p), 300);
+const fetchDetailsSoon = debounce(p => fetchDetails(p), 350);
 async function fetchDetails(p) {
-  if (hoverDetails.has(p.id) || !state.work) return;
+  if (hoverDetails.has(p.id)) return;
   hoverDetails.set(p.id, 'loading');
-  const home = `${p.cx.toFixed(5)},${p.cy.toFixed(5)}`;
-  const work = `${state.work[0].toFixed(5)},${state.work[1].toFixed(5)}`;
-  const { start, end } = state.times;
-  const [nameR, amR, pmR] = await Promise.allSettled([
-    reverseName([p.cx, p.cy]),
-    mb(`https://api.mapbox.com/directions/v5/${PROFILE}/${home};${work}?arrive_by=${stamp(start)}&overview=false`),
-    mb(`https://api.mapbox.com/directions/v5/${PROFILE}/${work};${home}?depart_at=${stamp(end)}&overview=false`),
-  ]);
-  const route = r => r.status === 'fulfilled' && r.value.routes && r.value.routes[0];
-  const amRoute = route(amR), pmRoute = route(pmR);
-  if (nameR.status === 'rejected' && !amRoute && !pmRoute) { hoverDetails.set(p.id, 'error'); }
-  else {
-    hoverDetails.set(p.id, {
-      name: nameR.status === 'fulfilled' ? nameR.value : null,
-      am: amRoute ? amRoute.duration : null,
-      pm: pmRoute ? pmRoute.duration : null,
-      miles: amRoute ? amRoute.distance / 1609.34 : (pmRoute ? pmRoute.distance / 1609.34 : null),
-    });
-  }
+  const home = [p.cx, p.cy];
+  const people = ready();
+  const [nameR, ...timesR] = await Promise.allSettled([reverseName(home), ...people.map(c => exactTimes(home, c))]);
+  const per = {};
+  people.forEach((c, i) => { per[c.id] = timesR[i].status === 'fulfilled' ? timesR[i].value : null; });
+  hoverDetails.set(p.id, { name: nameR.status === 'fulfilled' ? nameR.value : null, per });
   if (hoverId === p.id && lastPoint) { tip.innerHTML = tooltipHtml(p); positionTip(lastPoint); }
 }
 
 function showTipAt(e) {
-  if (!mapReady || !state.hexes) return;
-  const f = map.queryRenderedFeatures(e.point, { layers: ['hex-in', 'hex-out'] })[0];
+  if (!mapReady || !state.hexes || pinMode) return;
+  const f = map.queryRenderedFeatures(e.point, { layers: FILL_LAYERS })[0];
   if (!f) { clearHover(); return; }
   const p = f.properties;
   if (hoverId !== p.id) {
@@ -614,12 +1041,25 @@ function clearHover() {
   if (hoverId != null && mapReady) map.setFeatureState({ source: 'hex', id: hoverId }, { hover: false });
   hoverId = null;
   tip.hidden = true;
-  map.getCanvas().style.cursor = '';
+  if (!pinMode) map.getCanvas().style.cursor = '';
 }
 map.on('mousemove', showTipAt);
-map.on('click', showTipAt);              // tap support on touch screens
+map.on('click', e => {
+  if (pinMode) { setPinMode(false); addHome([e.lngLat.lng, e.lngLat.lat]); return; }
+  showTipAt(e);                           // tap support on touch screens
+});
 map.on('mouseout', clearHover);
 map.on('movestart', () => { if (window.matchMedia('(hover: none)').matches) clearHover(); });
+
+// ─── Start up: restore saved commuters and homes ──────────────────────────
+renderCommuters();
+refreshTokenUI();
+commuters.filter(c => c.work).forEach(placeWorkMarker);
+homes.forEach(placeHomeMarker);
+renderHomes();
+if (!token) setStatus('Paste a Mapbox public token to get started.');
+else if (commuters.some(c => c.work)) run({ fit: true });
+else setStatus('Enter a work address to begin.');
 </script>
 </body>
 </html>

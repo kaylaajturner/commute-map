@@ -5,6 +5,11 @@ Enter a work address, when you need to arrive, when you leave, and your max comm
 The map colors every reachable area by drive time and hatches the areas over your limit.
 Hover any area to see its neighborhood name and exact morning and evening drive times.
 
+- **Two commuters:** add a second person with their own work address and schedule. The map shows where both commutes fit, and where only one does.
+- **Compare homes:** add specific places by address or by dropping a pin. Each gets exact drive times for each person and a verdict like "Works for both".
+
+Your commuters and pinned homes are saved in your browser, so they're still there next time.
+
 Everything runs in the browser on free tiers. No server is needed.
 
 ## What it uses (all free)
@@ -17,7 +22,7 @@ Everything runs in the browser on free tiers. No server is needed.
 | Address search + neighborhood names | Mapbox Geocoding API | 100,000 requests / month |
 | Hex grid + math | Turf.js (runs in your browser) | Free |
 
-A normal session uses roughly 6 requests per time combination plus 3 per new area you hover.
+A normal session uses roughly 6 requests per commuter per time combination, plus 2 per commuter for each area you hover or home you compare.
 Results are cached in your browser, so revisiting a time combination costs nothing.
 You would have to work very hard to leave the free tier.
 
@@ -46,9 +51,11 @@ At that point overage charges become possible. Before you add one, create a new 
 
 ## How it works
 
-- **Coloring:** Mapbox returns drive-time zones (5, 10, 15 … 60 minutes) from your work address. The page lays a hex grid over them and gives each hex its zone for the morning and evening legs. The slider and "Color by" options only restyle the map, so they're instant and cost no requests.
+- **Coloring:** Mapbox returns drive-time zones (5, 10, 15 … 60 minutes) from your work address. The page lays a hex grid over them and gives each hex its zone for the morning and evening legs. The slider, "Measure by" and "Show" options only restyle the map, so they're instant and cost no requests.
 - **Morning vs. evening:** Evening zones are measured leaving work at your end time. Mapbox can only measure *outward* from a point, so morning zones are an estimate that uses traffic from 30 minutes before your start time. The hover tooltip fixes this with a real "arrive by" route from that spot.
 - **Traffic:** All times use typical traffic for the next Tuesday, so they reflect normal rush hour rather than whatever is happening right now.
+- **Two commuters:** places within the limit for both are colored by whichever commute is longer. Places that only work for one person get that person's color. Use **Show** to look at one person at a time.
+- **Compared homes** use real routes for every person and are re-checked when you change an address or time. The check marks follow the limit and the "Measure by" choice.
 - **Times snap to 15 minutes** so results can be cached and reused.
 
 ## Known limits
@@ -60,6 +67,6 @@ At that point overage charges become possible. Before you add one, create a new 
 
 ## Ideas for later
 
-- Show a second work address (for a partner) and highlight the overlap.
-- Let users click to pin a few candidate homes and compare them.
-- Add rent or home-price data per neighborhood.
+- A separate time limit for each commuter.
+- Rent or home-price data per neighborhood.
+- A shareable link that encodes the addresses and homes.
